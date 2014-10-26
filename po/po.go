@@ -1,9 +1,17 @@
 package po
 
-import "io"
+import (
+	"bufio"
+	"bytes"
+	"io"
+	"net/textproto"
+	"sort"
+	"strings"
+)
 
 // File represents a PO file.
 type File struct {
+	Header   textproto.MIMEHeader
 	Messages []Message
 }
 
@@ -50,12 +58,42 @@ func Parse(r io.Reader) (File, error) {
 		}
 		msgs = append(msgs, msg)
 	}
-	return File{msgs}, scan.Err()
+	if scan.Err() != nil {
+		return File{}, scan.Err()
+	}
+
+	var header textproto.MIMEHeader
+	if msgs[0].Id == "" && len(msgs[0].Str) == 1 {
+		var err error
+		header, err = textproto.NewReader(bufio.NewReader(strings.NewReader(msgs[0].Str[0]))).
+			ReadMIMEHeader()
+		if err != nil && err != io.EOF {
+			return File{}, err
+		}
+		msgs = msgs[1:]
+	}
+
+	return File{header, msgs}, nil
 }
 
 // Write the PO file to a destination writer.
 func (f File) WriteTo(w io.Writer) (n int64, err error) {
 	var wr = newWriter()
+	// TODO: Probably better to make a type for the header and implement WriterTo
+	if len(f.Header) > 0 {
+		wr.quo("msgid ", "")
+		var keys []string
+		for k := range f.Header {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		var buf bytes.Buffer
+		for _, k := range keys {
+			buf.WriteString(k + ": " + f.Header.Get(k) + "\n")
+		}
+		wr.quo("msgstr ", buf.String())
+		wr.newline()
+	}
 	for _, msg := range f.Messages {
 		wr.from(msg)
 		wr.newline()
@@ -67,9 +105,9 @@ func (f File) WriteTo(w io.Writer) (n int64, err error) {
 func (m Message) WriteTo(w io.Writer) (n int64, err error) {
 	var wr = newWriter()
 	wr.from(m.Comment)
-	wr.quo("msgctxt ", m.Ctxt)
+	wr.opt("msgctxt ", m.Ctxt)
 	wr.quo("msgid ", m.Id)
-	wr.quo("msgid_plural ", m.IdPlural)
+	wr.opt("msgid_plural ", m.IdPlural)
 	wr.msgstr(m.Str)
 
 	// TODO: If there is a plural form specified, then msgstr has an index.

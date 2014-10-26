@@ -47,16 +47,16 @@ func (wr *writer) one(prefix, val string) {
 	}
 }
 
-// quo writes the given value as a quoted string
-func (wr *writer) quo(prefix, val string) {
+// opt writes the given value as a quoted string
+func (wr *writer) opt(prefix, val string) {
 	if val != "" {
-		wr.str(prefix, val)
+		wr.quo(prefix, val)
 	}
 }
 
-// str always writes the given value (quoted), even if empty.
+// quo always writes the given value (quoted), even if empty.
 // Additionally, it breaks multiline strings across lines.
-func (wr *writer) str(prefix, val string) {
+func (wr *writer) quo(prefix, val string) {
 	if !strings.Contains(val, "\n") {
 		wr.buf.WriteString(prefix + strconv.Quote(val) + "\n")
 		return
@@ -67,7 +67,9 @@ func (wr *writer) str(prefix, val string) {
 	for {
 		i := strings.Index(val, "\n")
 		if i == -1 {
-			wr.buf.WriteString(strconv.Quote(val) + "\n")
+			if val != "" {
+				wr.buf.WriteString(strconv.Quote(val) + "\n")
+			}
 			return
 		}
 		wr.buf.WriteString(strconv.Quote(val[:i+1]) + "\n")
@@ -79,19 +81,19 @@ func (wr *writer) str(prefix, val string) {
 // vals should be at most length 1.
 func (wr *writer) msgstr(vals []string) {
 	if len(vals) == 0 {
-		wr.str("msgstr ", "")
+		wr.quo("msgstr ", "")
 	} else {
-		wr.str("msgstr ", vals[0])
+		wr.quo("msgstr ", vals[0])
 	}
 }
 
 // plural writes the plural form of msgstr.
 func (wr *writer) plural(vals []string) {
 	if len(vals) == 0 {
-		wr.str("msgstr[0] ", "")
+		wr.quo("msgstr[0] ", "")
 	} else {
 		for i, str := range vals {
-			wr.str("msgstr["+strconv.Itoa(i)+"] ", str)
+			wr.quo("msgstr["+strconv.Itoa(i)+"] ", str)
 		}
 	}
 }
