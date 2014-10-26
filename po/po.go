@@ -31,21 +31,21 @@ type Comment struct {
 func Parse(r io.Reader) (File, error) {
 	var msgs []Message
 	var scan = newScanner(r)
-	for scan.hasNext {
+	for scan.nextmsg() {
 		// NOTE: the source code order of these fields is important.
 		var msg = Message{
 			Comment: Comment{
-				TranslatorComments: scan.mul("#  "),
-				ExtractedComments:  scan.mul("#. "),
-				References:         scan.spc("#: "),
-				Flags:              scan.spc("#, "),
-				PrevCtxt:           scan.one("#| msgctxt "),
-				PrevId:             scan.one("#| msgid "),
-				PrevIdPlural:       scan.one("#| msgid_plural "),
+				TranslatorComments: scan.mul("# "),
+				ExtractedComments:  scan.mul("#."),
+				References:         scan.spc("#:"),
+				Flags:              scan.spc("#,"),
+				PrevCtxt:           scan.one("#| msgctxt"),
+				PrevId:             scan.one("#| msgid"),
+				PrevIdPlural:       scan.one("#| msgid_plural"),
 			},
-			Ctxt:     scan.quo("msgctxt "),
-			Id:       scan.quo("msgid "),
-			IdPlural: scan.quo("msgid_plural "),
+			Ctxt:     scan.quo("msgctxt"),
+			Id:       scan.quo("msgid"),
+			IdPlural: scan.quo("msgid_plural"),
 			Str:      scan.msgstr(),
 		}
 		msgs = append(msgs, msg)
