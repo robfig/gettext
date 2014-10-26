@@ -46,7 +46,7 @@ func Parse(r io.Reader) (File, error) {
 			Ctxt:     scan.quo("msgctxt"),
 			Id:       scan.quo("msgid"),
 			IdPlural: scan.quo("msgid_plural"),
-			Str:      scan.msgstr(),
+			Str:      []string{scan.quo("msgstr")},
 		}
 		msgs = append(msgs, msg)
 	}

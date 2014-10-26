@@ -19,6 +19,16 @@ msgid "You have one egg"
 msgid_plural "You have {$EGGS_2} eggs"
 msgstr ""
 
+#: id=123
+msgid ""
+"ID Line 1\n"
+"ID Line 2\n"
+"ID Line 3"
+msgstr ""
+"STR Line 1\n"
+"STR Line 2\n"
+"STR Line 3"
+
 `[1:]
 
 var file = File{[]Message{
@@ -40,6 +50,14 @@ var file = File{[]Message{
 		Id:       "You have one egg",
 		IdPlural: "You have {$EGGS_2} eggs",
 		Str:      []string{""},
+	},
+
+	{
+		Comment: Comment{
+			References: []string{"id=123"},
+		},
+		Id:  "ID Line 1\nID Line 2\nID Line 3",
+		Str: []string{"STR Line 1\nSTR Line 2\nSTR Line 3"},
 	},
 }}
 

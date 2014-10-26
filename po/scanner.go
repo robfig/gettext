@@ -63,29 +63,22 @@ func (s *scanner) one(prefix string) string {
 	return r
 }
 
+// quo reads a quoted string after the given prefix.
+// multiline strings are handled.
 func (s *scanner) quo(prefix string) string {
 	var r string
 	if s.prefix(prefix) {
 		r = s.unquote(s.txt(prefix))
-		s.Scan()
-	}
-	return r
-}
-
-func (s *scanner) msgstr() []string {
-	var r []string
-	for s.prefix("msgstr") {
-		r = append(r, s.unquote(s.txt("msgstr")))
-		if !s.Scan() {
+		for {
+			if !s.Scan() {
+				return r
+			}
+			if len(s.Bytes()) > 0 && s.Bytes()[0] == '"' {
+				r += s.unquote(s.Text())
+				continue
+			}
 			break
 		}
-
-		// TODO: Plural
-		// var i int
-		// var str string
-		// _, err = fmt.Scanf("msgstr[%d] %q", &i, &str)
-		// if err != nil {
-		// }
 	}
 	return r
 }

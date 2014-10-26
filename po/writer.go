@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"strconv"
+	"strings"
 )
 
 // writer formats message fields into a buffer and writes to a destination.
@@ -47,16 +48,31 @@ func (wr *writer) one(prefix, val string) {
 }
 
 // quo writes the given value as a quoted string
-// TODO: break long strings across lines
 func (wr *writer) quo(prefix, val string) {
 	if val != "" {
 		wr.str(prefix, val)
 	}
 }
 
-// str always writes the given value (quoted), even if strty.
+// str always writes the given value (quoted), even if empty.
+// Additionally, it breaks multiline strings across lines.
 func (wr *writer) str(prefix, val string) {
-	wr.buf.WriteString(prefix + strconv.Quote(val) + "\n")
+	if !strings.Contains(val, "\n") {
+		wr.buf.WriteString(prefix + strconv.Quote(val) + "\n")
+		return
+	}
+
+	// multiline
+	wr.buf.WriteString(prefix + `""` + "\n")
+	for {
+		i := strings.Index(val, "\n")
+		if i == -1 {
+			wr.buf.WriteString(strconv.Quote(val) + "\n")
+			return
+		}
+		wr.buf.WriteString(strconv.Quote(val[:i+1]) + "\n")
+		val = val[i+1:]
+	}
 }
 
 // msgstr writes a singular msgstr.
