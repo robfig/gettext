@@ -94,10 +94,13 @@ func (s *scanner) msgstr() []string {
 	}
 
 	var r []string
-	for s.prefix("msgstr[") {
-		r = append(r, s.quo("msgstr["+strconv.Itoa(len(r))+"] "))
+	for {
+		var prefix = "msgstr[" + strconv.Itoa(len(r)) + "] "
+		if !s.prefix(prefix) {
+			return r
+		}
+		r = append(r, s.quo(prefix))
 	}
-	return r
 }
 
 func (s *scanner) unquote(str string) string {
