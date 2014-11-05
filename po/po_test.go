@@ -30,7 +30,8 @@ msgstr ""
 msgctxt "The number of eggs you need."
 msgid "You have one egg"
 msgid_plural "You have {$EGGS_2} eggs"
-msgstr ""
+msgstr[0] "zYou zhave zone zegg"
+msgstr[1] "zYou zhave z{$EGGS_2} zeggs"
 
 #: id=123
 msgid ""
@@ -74,7 +75,7 @@ var file = File{
 			Ctxt:     "The number of eggs you need.",
 			Id:       "You have one egg",
 			IdPlural: "You have {$EGGS_2} eggs",
-			Str:      []string{""},
+			Str:      []string{"zYou zhave zone zegg", "zYou zhave z{$EGGS_2} zeggs"},
 		},
 
 		{

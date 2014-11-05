@@ -23,6 +23,9 @@ func newScanner(r io.Reader) *scanner {
 // nextmsg goes to the next message, skipping blank lines in between.
 func (s *scanner) nextmsg() bool {
 	for {
+		if s.err != nil {
+			return false
+		}
 		if !s.Scan() {
 			return false
 		}
@@ -79,6 +82,20 @@ func (s *scanner) quo(prefix string) string {
 			}
 			break
 		}
+	}
+	return r
+}
+
+// msgstr parses the msgstr section of a message record.
+// it handles multiline messages as well as indexed plural forms.
+func (s *scanner) msgstr() []string {
+	if s.prefix("msgstr ") {
+		return []string{s.quo("msgstr ")}
+	}
+
+	var r []string
+	for s.prefix("msgstr[") {
+		r = append(r, s.quo("msgstr["+strconv.Itoa(len(r))+"] "))
 	}
 	return r
 }

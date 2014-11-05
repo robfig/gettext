@@ -54,7 +54,7 @@ func Parse(r io.Reader) (File, error) {
 			Ctxt:     scan.quo("msgctxt"),
 			Id:       scan.quo("msgid"),
 			IdPlural: scan.quo("msgid_plural"),
-			Str:      []string{scan.quo("msgstr")},
+			Str:      scan.msgstr(),
 		}
 		msgs = append(msgs, msg)
 	}
@@ -108,14 +108,11 @@ func (m Message) WriteTo(w io.Writer) (n int64, err error) {
 	wr.opt("msgctxt ", m.Ctxt)
 	wr.quo("msgid ", m.Id)
 	wr.opt("msgid_plural ", m.IdPlural)
-	wr.msgstr(m.Str)
-
-	// TODO: If there is a plural form specified, then msgstr has an index.
-	// if len(m.IdPlural) == 0 {
-	// wr.msgstr(m.Str)
-	// } else {
-	// 	wr.plural(m.Str)
-	// }
+	if len(m.IdPlural) == 0 {
+		wr.msgstr(m.Str)
+	} else {
+		wr.plural(m.Str)
+	}
 
 	return wr.to(w)
 }
