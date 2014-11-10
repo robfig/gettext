@@ -17,6 +17,7 @@ msgstr ""
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Mime-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "Po-Revision-Date: 2014-05-10 18:15+0200\n"
 "Project-Id-Version: GNU hello-java 0.19-rc1\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
@@ -31,7 +32,8 @@ msgctxt "The number of eggs you need."
 msgid "You have one egg"
 msgid_plural "You have {$EGGS_2} eggs"
 msgstr[0] "zYou zhave zone zegg"
-msgstr[1] "zYou zhave z{$EGGS_2} zeggs"
+msgstr[1] "zYou zhave zfew zeggs"
+msgstr[2] "zYou zhave z{$EGGS_2} zeggs"
 
 #: id=123
 msgid ""
@@ -53,6 +55,7 @@ var file = File{
 		"Language-Team":             {"Slovak <sk-i18n@lists.linux.sk>"},
 		"Last-Translator":           {"Marcel Telka <marcel@telka.sk>"},
 		"Mime-Version":              {"1.0"},
+		"Plural-Forms":              {"nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;"},
 		"Po-Revision-Date":          {"2014-05-10 18:15+0200"},
 		"Project-Id-Version":        {"GNU hello-java 0.19-rc1"},
 		"Report-Msgid-Bugs-To":      {"bug-gnu-gettext@gnu.org"},
@@ -75,7 +78,11 @@ var file = File{
 			Ctxt:     "The number of eggs you need.",
 			Id:       "You have one egg",
 			IdPlural: "You have {$EGGS_2} eggs",
-			Str:      []string{"zYou zhave zone zegg", "zYou zhave z{$EGGS_2} zeggs"},
+			Str: []string{
+				"zYou zhave zone zegg",
+				"zYou zhave zfew zeggs",
+				"zYou zhave z{$EGGS_2} zeggs",
+			},
 		},
 
 		{
@@ -93,13 +100,12 @@ func TestParse(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	if !reflect.DeepEqual(file, actual) {
-		if !reflect.DeepEqual(file.Header, actual.Header) {
-			t.Errorf("expected header(%v):\n%v\ngot header(%v):\n%v",
-				len(file.Header), file.Header, len(actual.Header), actual.Header)
-		} else {
-			t.Errorf("expected msgs:\n%v\ngot msgs:\n%v", file.Messages, actual.Messages)
-		}
+	if !reflect.DeepEqual(file.Header, actual.Header) {
+		t.Errorf("expected header(%v):\n%v\ngot header(%v):\n%v",
+			len(file.Header), file.Header, len(actual.Header), actual.Header)
+	}
+	if !reflect.DeepEqual(file.Messages, actual.Messages) {
+		t.Errorf("expected msgs:\n%v\ngot msgs:\n%v", file.Messages, actual.Messages)
 	}
 }
 

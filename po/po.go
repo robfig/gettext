@@ -3,6 +3,7 @@ package po
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"net/textproto"
 	"sort"
@@ -11,8 +12,9 @@ import (
 
 // File represents a PO file.
 type File struct {
-	Header   textproto.MIMEHeader
-	Messages []Message
+	Header    textproto.MIMEHeader
+	Messages  []Message
+	Pluralize PluralSelector
 }
 
 // Message stores a gettext message.
@@ -73,7 +75,15 @@ func Parse(r io.Reader) (File, error) {
 		msgs = msgs[1:]
 	}
 
-	return File{header, msgs}, nil
+	var pluralize PluralSelector
+	if pluralForms := header.Get("Plural-Forms"); pluralForms != "" {
+		pluralize = lookupPluralSelector(pluralForms)
+		if pluralize == nil {
+			return File{}, fmt.Errorf("unrecognized plural form selector: %v", pluralForms)
+		}
+	}
+
+	return File{header, msgs, pluralize}, nil
 }
 
 // Write the PO file to a destination writer.
