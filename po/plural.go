@@ -118,6 +118,23 @@ func lookupPluralSelector(pluralForms string) PluralSelector {
 	return pluralSelectors[strings.Replace(pluralForms, " ", "", -1)]
 }
 
+// PluralSelectorForLanguage returns the appropriate plural selector for the
+// provided languge code. The code can be either the too letter code ("en") or
+// the 5 character variant ("en_GB")
+func PluralSelectorForLanguage(lang string) PluralSelector {
+	lang = strings.Replace(lang, "-", "_", -1)
+	if pluralForms, found := pluralExprs[lang]; found {
+		return lookupPluralSelector(pluralForms)
+	}
+	if len(lang) > 2 && lang[2] == '_' {
+		// Naively trim the input
+		if pluralForms, found := pluralExprs[lang[:2]]; found {
+			return lookupPluralSelector(pluralForms)
+		}
+	}
+	return nil
+}
+
 func plural0(n int) int {
 	return 0
 }
