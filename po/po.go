@@ -82,6 +82,9 @@ func Parse(r io.Reader) (File, error) {
 			return File{}, fmt.Errorf("unrecognized plural form selector: %v", pluralForms)
 		}
 	}
+	if pluralize == nil {
+		pluralize = PluralSelectorForLanguage(header.Get("Language"))
+	}
 
 	return File{header, msgs, pluralize}, nil
 }
