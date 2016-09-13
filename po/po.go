@@ -64,6 +64,10 @@ func Parse(r io.Reader) (File, error) {
 		return File{}, scan.Err()
 	}
 
+	if len(msgs) == 0 {
+		return File{}, nil
+	}
+
 	var header textproto.MIMEHeader
 	if msgs[0].Id == "" && len(msgs[0].Str) == 1 {
 		var err error
