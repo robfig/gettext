@@ -92,6 +92,7 @@ var pluralExprs = map[string]string{
 	"pl":    "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);",
 	"sl":    "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);",
 	"ar":    "nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);",
+	"ms":    "nplurals=1; plural=0;",
 }
 
 // pluralSelectors contains a lookup from space-stripped plural forms strings to
