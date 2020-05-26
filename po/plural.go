@@ -47,6 +47,7 @@ var langNames = map[string]string{
 	"sl":    "Slovenian",
 	"ar":    "Arabic",
 	"ms":    "Malay",
+	"th":    "Thai",
 }
 
 // TODO: Fall back to these if Plural-Forms is not specified.
@@ -56,6 +57,7 @@ var pluralExprs = map[string]string{
 	"ko":    "nplurals=1; plural=0;",
 	"zh":    "nplurals=1; plural=0;",
 	"ms":    "nplurals=1; plural=0;",
+	"th":    "nplurals=1; plural=0;",
 	"en":    "nplurals=2; plural=(n != 1);",
 	"de":    "nplurals=2; plural=(n != 1);",
 	"nl":    "nplurals=2; plural=(n != 1);",
