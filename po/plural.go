@@ -48,6 +48,7 @@ var langNames = map[string]string{
 	"ar":    "Arabic",
 	"ms":    "Malay",
 	"th":    "Thai",
+	"is":    "Icelandic",
 }
 
 // TODO: Fall back to these if Plural-Forms is not specified.
@@ -94,6 +95,7 @@ var pluralExprs = map[string]string{
 	"pl":    "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);",
 	"sl":    "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);",
 	"ar":    "nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);",
+	"is":    "nplurals=2; plural=(n%10!=1 || n%100==11);",
 }
 
 // pluralSelectors contains a lookup from space-stripped plural forms strings to
@@ -102,6 +104,7 @@ var pluralSelectors = stripSpace(map[string]PluralSelector{
 	"nplurals=1; plural=0;":                                                                                  plural0,
 	"nplurals=2; plural=(n != 1);":                                                                           pluralNeq1,
 	"nplurals=2; plural=(n > 1);":                                                                            pluralGt1,
+	"nplurals=2; plural=(n%10!=1 || n%100==11);":                                                             pluralIcelandic,
 	"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);":                                        pluralLatvian,
 	"nplurals=3; plural=n==1 ? 0 : n==2 ? 1 : 2;":                                                            pluralIrish,
 	"nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;":                             pluralRomanian,
@@ -170,6 +173,15 @@ func pluralLatvian(n int) int {
 		return 1
 	default:
 		return 2
+	}
+}
+
+func pluralIcelandic(n int) int {
+	switch {
+	case n%10 != 1 || n%100 == 11:
+		return 1
+	default:
+		return 0
 	}
 }
 
